@@ -1,0 +1,191 @@
+# Flask Kafka Lab Workflow
+
+This project demonstrates a lab workflow system using Flask, Kafka, and a Vue.js frontend. It supports file uploads, generates PDF reports in a ZIP, and emits Kafka events.
+
+## 📦 1. Prerequisites
+
+* Docker & Docker Compose installed
+* Python 3.11+
+* Node.js 20 (managed via NVM)
+* pip or venv for Python environment
+
+## 🐳 2. Docker Setup
+
+### 2.1 Start Kafka, Zookeeper, and AKHQ
+
+```bash
+docker-compose up -d
+```
+
+* Kafka Brokers: `localhost:9092, 9093, 9094, 9095`
+* Zookeeper: `localhost:2181`
+* AKHQ UI: [http://localhost:9500](http://localhost:9500)
+
+Check Kafka topics:
+
+```bash
+docker exec -it kafka1 kafka-topics --bootstrap-server localhost:9092 --list
+```
+
+Expected topics:  
+
+* `__consumer_offsets`
+* `audit_trail`
+* `customer_notification`
+* `file_processing_done`
+* `file_upload_initiated`
+* `lab_request_created`
+
+## NB: 
+
+##### if the topics aren't created then run the program they will be created automatically
+
+## 🐍 3. Python Backend Setup
+
+Create a virtual environment:
+
+```bash
+python -m venv env
+source env/bin/activate      # macOS/Linux
+env\Scripts\activate         # Windows
+```
+
+Install requirements:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run Flask:
+
+```bash
+export FLASK_APP=app.py
+export FLASK_ENV=development
+flask run --host=0.0.0.0 --port=5080
+```
+
+* Flask API Base URL: `http://localhost:5080`
+
+### 3.1 Flask Endpoints
+
+| Endpoint                  | Method | Description                               |
+| ------------------------- | ------ | ----------------------------------------- |
+| /upload_files             | POST   | Upload XML, JSON, Image, PDF; returns ZIP |
+| /create_batch             | POST   | Create a new lab batch                    |
+| /update_status/<batch_id> | POST   | Update status of a lab batch              |
+| /download_result/<job_id> | GET    | Download ZIP result for a job             |
+
+File upload limits:
+
+* XML/JSON: ≤ 1 KB
+* Image: ≤ 50 KB
+* PDF: ≤ 10 KB
+* ZIP generated: ≤ 50 KB (50 PDFs inside)
+
+### 3.2 Kafka Events
+
+The backend emits Kafka events on:
+
+* `file_upload_initiated`
+* `file_processing_done`
+* `lab_request_created`
+* `audit_trail`
+* `customer_notification`
+
+## ⚡ 4. Vue Frontend Setup
+
+Ensure Node.js v20 is installed using NVM:
+
+```bash
+nvm install 20
+nvm use 20
+```
+
+Install dependencies:
+
+```bash
+cd frontend
+npm install
+```
+
+Run frontend:
+
+```bash
+npm run dev
+```
+
+* Vue app URL: [http://localhost:5173](http://localhost:5173) (example if using Vite)
+
+## 🧪 5. Workload / Stress Test Uploads
+
+The `workload_test_uploads.py` script can simulate multiple simultaneous uploads to test the system.
+
+### 5.1 Usage
+
+```bash
+python workload_test_uploads.py
+```
+
+Adjust parameters at the top of the script:
+
+```python
+total_requests = 2000       # total number of uploads
+concurrency = 100           # simultaneous uploads
+```
+
+The script will print:
+
+```
+[OK 0] -> Files uploaded successfully
+[ERR 1] Status 400
+[EXC 2] ...
+```
+
+Make sure your Flask backend is running before starting the stress test.
+
+## 🔌 6. Connecting to AKHQ
+
+AKHQ provides a UI to monitor Kafka topics:
+
+* URL: [http://localhost:9500](http://localhost:9500)
+* Default topics: see section 2.1
+
+You can inspect messages, offsets, and consumers in real-time.
+
+## 🚀 7. Running Kafka Consumer
+
+To process files and generate ZIP results:
+
+```bash
+python file_processor_consumer.py
+```
+
+Ensure your Kafka brokers are reachable.
+Adjust bootstrap servers in `file_processor_consumer.py` if needed:
+
+```python
+consumer = Consumer({
+    "bootstrap.servers": "localhost:9092,localhost:9093,localhost:9094,localhost:9095",
+    "group.id": "file_processor_group",
+    "auto.offset.reset": "earliest"
+})
+```
+
+## ⚙️ 8. Tips
+
+* Always activate your Python environment: `source env/bin/activate`
+* Ensure Docker containers are running: `docker ps`
+* Adjust concurrency in `workload_test_uploads.py` if experiencing 400 or connection errors.
+* Use AKHQ to debug Kafka messages in real-time.
+
+## 📂 9. Sample Files for Frontend Testing
+
+A `sample_files` folder is included with test files:
+
+* XML (~1 KB)
+* JSON (~1 KB)
+* Image (~50 KB)
+* PDF (~10 KB)
+* Small file (~1 MB)
+
+Frontend can use these files to test upload functionality.
