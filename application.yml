@@ -1,0 +1,18 @@
+akhq:
+  server:
+    access-log: true
+  connections:
+    kafka-cluster:
+      properties:
+        bootstrap.servers: "kafka1:9092,kafka2:9093,kafka3:9094,kafka4:9095"
+
+micronaut:
+  server:
+    port: 8080
+  application:
+    name: "AKHQ"
+
+endpoints:
+  health:
+    enabled: true
+    sensitive: false

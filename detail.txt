@@ -1,0 +1,11 @@
+| Topic                     | Workflow Stage              | Example Message Fields                                                  | Kafka Role                                                    |
+| ------------------------- | --------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `lab_request_created`     | Request Test Batch          | batch_id, patient_name, test_type, request_date, priority               | Producer emits new request                                    |
+| `data_entry_notification` | Data Entry Stage            | batch_id, test_id, sample_id, entered_by, timestamp, values             | Producer emits entry event, consumer for real-time validation |
+| `bottleneck_monitor`      | Monitor Bottlenecks         | batch_id, test_id, sample_id, entry_time, processing_time, status       | Stream processing for slow stage detection                    |
+| `first_approval`          | 1st Approval Stage          | batch_id, test_id, sample_id, approved_by, approval_timestamp, status   | Producer/Consumer for approval workflow                       |
+| `sample_collection`       | Sample Collection Stage     | batch_id, sample_id, collected_by, timestamp, status                    | Track collected samples                                       |
+| `sample_analysis`         | Sample Analysis Stage       | batch_id, test_id, sample_id, analysis_status, timestamp                | Stream processing for analysis                                |
+| `result_approval`         | Result Approval             | batch_id, test_id, sample_id, approved_by, approval_timestamp, status   | Producer/Consumer for approval                                |
+| `customer_notification`   | Result Sent / Portal Update | batch_id, test_id, sample_id, customer_id, notification_type, timestamp | Consumer sends email/SMS                                      |
+| `audit_trail`             | End-to-End Audit            | batch_id, test_id, sample_id, action_type, user, timestamp, details     | Streams for complete audit trail                              |
