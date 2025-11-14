@@ -115,7 +115,6 @@ services:
       - /app/node_modules
     environment:
       CHOKIDAR_USEPOLLING: "true"
-      PORT: 5177
     depends_on:
       - flask_app
 
