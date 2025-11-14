@@ -1,0 +1,38 @@
+2025-11-14 20:26:35,474 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2025-11-14 20:26:35,484 INFO supervisord started with pid 1
+2025-11-14 20:26:36,493 INFO spawned: 'flask' with pid 7
+2025-11-14 20:26:36,499 INFO spawned: 'vite' with pid 8
+2025-11-14 20:26:37,034 WARN exited: vite (exit status 1; not expected)
+2025-11-14 20:26:38,055 INFO success: flask entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-11-14 20:26:38,057 INFO spawned: 'vite' with pid 37
+2025-11-14 20:26:38,408 WARN exited: vite (exit status 1; not expected)
+2025-11-14 20:26:40,418 INFO spawned: 'vite' with pid 60
+2025-11-14 20:26:40,786 WARN exited: vite (exit status 1; not expected)
+2025-11-14 20:26:43,830 INFO spawned: 'vite' with pid 83
+2025-11-14 20:26:44,216 WARN exited: vite (exit status 1; not expected)
+2025-11-14 20:26:45,218 INFO gave up: vite entered FATAL state, too many start retries too quickly
+2025-11-14 20:34:19,537 WARN received SIGTERM indicating exit request
+2025-11-14 20:34:19,539 INFO waiting for flask to die
+2025-11-14 20:34:20,567 WARN stopped: flask (terminated by SIGTERM)
+2025-11-14 20:34:21,112 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2025-11-14 20:34:21,115 INFO supervisord started with pid 1
+2025-11-14 20:34:22,121 INFO spawned: 'flask' with pid 6
+2025-11-14 20:34:22,125 INFO spawned: 'vite' with pid 7
+2025-11-14 20:34:22,258 WARN exited: vite (exit status 127; not expected)
+2025-11-14 20:34:23,452 INFO success: flask entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-11-14 20:34:23,461 INFO spawned: 'vite' with pid 25
+2025-11-14 20:34:23,591 WARN exited: vite (exit status 127; not expected)
+2025-11-14 20:34:25,612 INFO spawned: 'vite' with pid 37
+2025-11-14 20:34:25,753 WARN exited: vite (exit status 127; not expected)
+2025-11-14 20:34:28,766 INFO spawned: 'vite' with pid 49
+2025-11-14 20:34:28,900 WARN exited: vite (exit status 127; not expected)
+2025-11-14 20:34:29,901 INFO gave up: vite entered FATAL state, too many start retries too quickly
+2025-11-14 20:40:29,968 WARN received SIGTERM indicating exit request
+2025-11-14 20:40:29,970 INFO waiting for flask to die
+2025-11-14 20:40:31,986 WARN stopped: flask (terminated by SIGTERM)
+2025-11-14 20:41:20,308 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2025-11-14 20:41:20,323 INFO supervisord started with pid 1
+2025-11-14 20:41:21,337 INFO spawned: 'flask' with pid 7
+2025-11-14 20:41:21,349 INFO spawned: 'vite' with pid 8
+2025-11-14 20:41:22,379 INFO success: flask entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-11-14 20:41:22,393 INFO success: vite entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)

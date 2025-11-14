@@ -1,8 +1,9 @@
 version: '3.9'
 
 services:
+
   # ========================
-  # Zookeeper
+  # Zookeeper (ARM64)
   # ========================
   zookeeper:
     image: confluentinc/cp-zookeeper:7.9.4-1-ubi8.arm64
@@ -14,8 +15,9 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
+
   # ========================
-  # Kafka Brokers
+  # Kafka Brokers (ARM64)
   # ========================
   kafka1:
     image: confluentinc/cp-kafka:7.5.0.arm64
@@ -30,6 +32,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    depends_on:
+      - zookeeper
 
   kafka2:
     image: confluentinc/cp-kafka:7.5.0.arm64
@@ -44,6 +48,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    depends_on:
+      - zookeeper
 
   kafka3:
     image: confluentinc/cp-kafka:7.5.0.arm64
@@ -58,6 +64,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    depends_on:
+      - zookeeper
 
   kafka4:
     image: confluentinc/cp-kafka:7.5.0.arm64
@@ -72,54 +80,34 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-
-
+    depends_on:
+      - zookeeper
 
 
   # ========================
-  # Flask Backend
+  # Unified Flask + Vue App
   # ========================
-  flask_app:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: flask_lab
+    container_name: lab_fullstack
+    platform: linux/arm64
     ports:
-      - "5080:5080"
+      - "5080:5080"   # Flask backend API
+      - "5177:5177"   # Vue frontend dev server
     volumes:
-      - .:/app
+      - .:/app                      # Sync source code
+      - node_modules:/app/node_modules
+      - node_modules_fe:/app/frontend/lab-frontend/node_modules
     environment:
       FLASK_ENV: development
+      CHOKIDAR_USEPOLLING: "true"  # For Vue hot reload on Docker/Mac
     depends_on:
       - kafka1
       - kafka2
       - kafka3
       - kafka4
-
-
-
-
-
-  # ========================
-  # Vue Frontend
-  # ========================
-  vue_frontend:
-    build:
-      context: ./frontend/lab-frontend
-      dockerfile: Dockerfile
-    container_name: vue_lab_frontend
-    ports:
-      - "5177:5177"
-    volumes:
-      - ./frontend/lab-frontend:/app
-      - /app/node_modules
-    environment:
-      CHOKIDAR_USEPOLLING: "true"
-      PORT: 5177
-    depends_on:
-      - flask_app
-
-
 
 
   # ========================
@@ -140,3 +128,11 @@ services:
       - kafka2
       - kafka3
       - kafka4
+
+
+# ========================
+# Named Volumes
+# ========================
+volumes:
+  node_modules:
+  node_modules_fe:
